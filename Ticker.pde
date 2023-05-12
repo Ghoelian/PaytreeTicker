@@ -7,6 +7,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 class Ticker {
+  private int streak = 0;
+  private boolean streakIncreased = false;
+
   private BigDecimal total = BigDecimal.ZERO;
 
   private DecimalFormat df = new DecimalFormat();
@@ -28,7 +31,22 @@ class Ticker {
 
       String result = request.getContent();
 
-      this.total = new BigDecimal(result);
+      BigDecimal newTotal = new BigDecimal(result);
+      if (newTotal.compareTo(this.total) > 0) {
+        if (!this.streakIncreased) {
+          this.streak += 1;
+        }
+
+        this.streakIncreased = true;
+      } else {
+        if (this.streakIncreased) {
+          this.streak = 0;
+        }
+
+        this.streakIncreased = false;
+      }
+
+      this.total = newTotal;
       this.lastTotalTimestamp = now;
     }
   }
@@ -41,7 +59,20 @@ class Ticker {
     textAlign(LEFT, BOTTOM);
     textSize(primaryTextSize);
 
-    text("€", 0, height);
-    text(this.df.format(this.total), 60, height);
+    text("€", 10, height);
+    text(this.df.format(this.total), 80, height);
+
+    textAlign(RIGHT, BOTTOM);
+
+    if (streak > 0) {
+      float val = map(streak, 0, 500, 190, 0);
+      fill(val, 255, 0);
+    }
+
+    if (this.streakIncreased) {
+      text("^", width - 50, height);
+    } else {
+      text("-", width - 50, height);
+    }
   }
 }

@@ -32,6 +32,8 @@ class Graph {
       this.highest = this.findHighest(data);
       this.lowest = this.findLowest(data);
       this.middle = (this.highest + this.lowest) / 2;
+      
+      this.legendOffset = String.valueOf(this.highest).length() * 30;
 
       if (this.data != null && this.data.length > 0) {
         this.stepSize = (width - legendOffset) / this.data.length;
