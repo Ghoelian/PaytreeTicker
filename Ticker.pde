@@ -8,6 +8,8 @@ import java.time.ZoneId;
 
 class Ticker {
   private int streak = 0;
+  private int maxStreak = 0;
+
   private boolean streakIncreased = false;
 
   private BigDecimal total = BigDecimal.ZERO;
@@ -17,8 +19,8 @@ class Ticker {
   private long lastTotalTimestamp = 0;
 
   Ticker() {
-    this.df.setMaximumFractionDigits(2);
-    this.df.setMinimumFractionDigits(2);
+    df.setMaximumFractionDigits(2);
+    df.setMinimumFractionDigits(2);
   }
 
   void getTotal() {
@@ -32,22 +34,26 @@ class Ticker {
       String result = request.getContent();
 
       BigDecimal newTotal = new BigDecimal(result);
-      if (newTotal.compareTo(this.total) > 0) {
-        if (!this.streakIncreased) {
-          this.streak += 1;
+      if (newTotal.compareTo(total) > 0) {
+        if (!streakIncreased) {
+          streak += 1;
+
+          if (streak > maxStreak) {
+            maxStreak = streak;
+          }
         }
 
-        this.streakIncreased = true;
+        streakIncreased = true;
       } else {
-        if (this.streakIncreased) {
-          this.streak = 0;
+        if (streakIncreased) {
+          streak = 0;
         }
 
-        this.streakIncreased = false;
+        streakIncreased = false;
       }
 
-      this.total = newTotal;
-      this.lastTotalTimestamp = now;
+      total = newTotal;
+      lastTotalTimestamp = now;
     }
   }
 
@@ -60,16 +66,16 @@ class Ticker {
     textSize(primaryTextSize);
 
     text("€", 10, height);
-    text(this.df.format(this.total), 80, height);
+    text(df.format(total), 80, height);
 
     textAlign(RIGHT, BOTTOM);
 
     if (streak > 0) {
-      float val = map(streak, 0, 500, 190, 0);
-      fill(val, 255, 0);
+      float val = map(streak, 0, maxStreak, 255, 105);
+      fill(242, val, 13);
     }
 
-    if (this.streakIncreased) {
+    if (streakIncreased) {
       text("^", width - 50, height);
     } else {
       text("-", width - 50, height);

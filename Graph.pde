@@ -27,57 +27,57 @@ class Graph {
       String result = request.getContent();
 
       int[] arr = gson.fromJson(result, int[].class);
-      this.data = arr;
+      data = arr;
 
-      this.highest = this.findHighest(data);
-      this.lowest = this.findLowest(data);
-      this.middle = (this.highest + this.lowest) / 2;
+      highest = findHighest(data);
+      lowest = findLowest(data);
+      middle = (highest + lowest) / 2;
       
-      this.legendOffset = String.valueOf(this.highest).length() * 30;
+      legendOffset = String.valueOf(highest).length() * 30;
 
-      if (this.data != null && this.data.length > 0) {
-        this.stepSize = (width - legendOffset) / this.data.length;
+      if (data != null && data.length > 0) {
+        stepSize = (width - legendOffset) / data.length;
       }
 
-      this.lastDataTimestamp = now;
+      lastDataTimestamp = now;
     }
   }
 
   void drawGraph() {
-    this.getData();
+    getData();
 
     fill(255);
     stroke(255);
 
-    line(this.legendOffset, 10, this.legendOffset, height - this.tickerOffsetY);
-    line(this.legendOffset, height - this.tickerOffsetY, width - 10, height - this.tickerOffsetY);
+    line(legendOffset, 10, legendOffset, height - tickerOffsetY);
+    line(legendOffset, height - tickerOffsetY, width - 10, height - tickerOffsetY);
 
     textSize(secondaryTextSize);
 
     textAlign(LEFT, TOP);
-    text(this.highest, 10, 10);
+    text(highest, 10, 10);
 
     textAlign(LEFT, CENTER);
-    text(this.middle, 10, (height - this.tickerOffsetY) / 2);
+    text(middle, 10, (height - tickerOffsetY) / 2);
 
     textAlign(LEFT, BOTTOM);
-    text(this.lowest, 10, height - this.tickerOffsetY);
+    text(lowest, 10, height - tickerOffsetY);
 
 
-    if (this.data != null) {
+    if (data != null) {
       stroke(242, 105, 13);
       strokeWeight(2);
-      for (int i = 0; i < this.data.length; i++) {
+      for (int i = 0; i < data.length; i++) {
         int current = this.data[i];
 
-        if (i < this.data.length - 1) {
-          int next = this.data[i + 1];
+        if (i < data.length - 1) {
+          int next = data[i + 1];
 
           line(
-            (i * this.stepSize) + this.legendOffset + 4,
-            map(current, lowest, this.highest, height - this.tickerOffsetY - 4, 10),
-            ((i + 1) * this.stepSize) + this.legendOffset + 4,
-            map(next, this.lowest, this.highest, height - this.tickerOffsetY - 4, 10)
+            (i * stepSize) + legendOffset + 4,
+            map(current, lowest, highest, height - tickerOffsetY - 4, 10),
+            ((i + 1) * stepSize) + legendOffset + 4,
+            map(next, lowest, highest, height - tickerOffsetY - 4, 10)
             );
         }
       }
