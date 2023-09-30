@@ -20,7 +20,7 @@ class Graph {
     long now = Instant.ofEpochSecond(0L).until(Instant.now(), ChronoUnit.SECONDS);
 
     if (lastDataTimestamp == 0 || (now - lastDataTimestamp) > refreshInterval) {
-      GetRequest request = new GetRequest("https://api.paytree-network.nl/v1/status/stats");
+      GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/stats");
       request.addHeader("Authorization", apiKey);
       request.send();
 
@@ -65,7 +65,7 @@ class Graph {
 
 
     if (data != null) {
-      stroke(242, 105, 13);
+      stroke(24, 94.6, 94.9);
       strokeWeight(2);
       for (int i = 0; i < data.length; i++) {
         int current = this.data[i];

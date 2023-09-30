@@ -23,14 +23,16 @@ void setup() {
   roboto = createFont("roboto.ttf", 32);
   textFont(roboto);
 
+  colorMode(HSB, 360, 100, 100);
+
   ticker = new Ticker();
   graph = new Graph();
 }
 
 void draw() {
+  background(0);
+  
   try {
-    background(0);
-
     ticker.drawTicker();
     graph.drawGraph();
   }
@@ -39,7 +41,7 @@ void draw() {
 
     textAlign(CENTER, CENTER);
     textSize(16);
-    System.out.println(e.getMessage());
-    text(e.getMessage(), width/2, height/2);
+    e.printStackTrace();
+    text(e.toString(), width/2, height/2);
   }
 }
