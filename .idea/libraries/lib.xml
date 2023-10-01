@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/gluegen-rt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/httpmime-4.1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/commons-codec-1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/httprequests_processing.jar!/" />
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/httpclient-4.1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/commons-logging-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/PaytreeTicker.jar!/" />
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/core.jar!/" />
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/httpcore-4.1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/gson-2.10.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/httpclient-cache-4.1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/linux-amd64/lib/jogl-all.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

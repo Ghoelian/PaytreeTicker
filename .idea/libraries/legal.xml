@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="legal">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/linux-amd64/java/legal.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

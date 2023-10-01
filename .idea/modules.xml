@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/PaytreeTicker.iml" filepath="$PROJECT_DIR$/.idea/PaytreeTicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/linux-aarch64/linux-aarch64.iml" filepath="$PROJECT_DIR$/linux-aarch64/linux-aarch64.iml" />
+      <module fileurl="file://$PROJECT_DIR$/linux-amd64/linux-amd64.iml" filepath="$PROJECT_DIR$/linux-amd64/linux-amd64.iml" />
+      <module fileurl="file://$PROJECT_DIR$/linux-arm/linux-arm.iml" filepath="$PROJECT_DIR$/linux-arm/linux-arm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/windows-amd64/windows-amd64.iml" filepath="$PROJECT_DIR$/windows-amd64/windows-amd64.iml" />
+    </modules>
+  </component>
+</project>
