@@ -3,7 +3,7 @@ JSONObject variables;
 static int refreshInterval = 5;
 
 PFont roboto;
-static int primaryTextSize = 100;
+static int primaryTextSize = 80;
 static int secondaryTextSize = 40;
 
 static String apiKey = "";
@@ -22,7 +22,7 @@ void setup() {
 
   apiKey = variables.getString("apiKey");
 
-  roboto = createFont("roboto.ttf", 32);
+  roboto = createFont("noto-sans-mono.ttf", 32);
   textFont(roboto);
 
   colorMode(HSB, 360, 100, 100);

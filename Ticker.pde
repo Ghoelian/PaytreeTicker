@@ -86,8 +86,8 @@ class Ticker {
     if (error != null) {
       text(error, 80, height);
     } else {
-      text("€", 10, height);
-      text(df.format(total), 80, height);
+      text("€", 10, height - 15);
+      text(df.format(total), 80, height - 15);
     }
 
     textAlign(RIGHT, BOTTOM);
@@ -98,9 +98,9 @@ class Ticker {
     }
 
     if (streakIncreased) {
-      text("^", width - 25, height);
+      text("^", width - 25, height - 5);
     } else {
-      text("-", width - 25, height);
+      text("-", width - 25, height - 20);
     }
   }
 }
