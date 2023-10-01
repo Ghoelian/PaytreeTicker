@@ -73,9 +73,11 @@ echo "done!"
 ```
 [Unit]
 Description=Paytree ticker
+After=network-online.target
+Wants=network-online.target
 
 [Service]
-ExecStart=/home/{user}/PaytreeTicker/start.sh
+ExecStart=/home/julian/PaytreeTicker/start.sh
 
 [Install]
 WantedBy=multi-user.target
