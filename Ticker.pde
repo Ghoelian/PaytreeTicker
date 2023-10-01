@@ -16,8 +16,6 @@ class Ticker {
 
   private DecimalFormat df = new DecimalFormat();
 
-  private long lastTotalTimestamp = 0;
-
   private String error;
 
   Ticker() {
@@ -36,50 +34,44 @@ class Ticker {
   }
 
   void getTotal() {
-    long now = Instant.ofEpochSecond(0L).until(Instant.now(), ChronoUnit.SECONDS);
+    GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/total");
+    request.addHeader("Authorization", apiKey);
+    request.send();
 
-    if (lastTotalTimestamp == 0 || (now - lastTotalTimestamp) > refreshInterval) {
-      GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/total");
-      request.addHeader("Authorization", apiKey);
-      request.send();
+    String result = request.getContent();
 
-      String result = request.getContent();
+    try {
+      BigDecimal newTotal = new BigDecimal(result);
 
-      try {
-        BigDecimal newTotal = new BigDecimal(result);
+      if (newTotal.compareTo(total) > 0) {
+        streak += 1;
 
-        if (newTotal.compareTo(total) > 0) {
-          streak += 1;
-
-          if (streak > maxStreak) {
-            maxStreak = streak;
-          }
-
-          saveBytes("streak", ("streak:" + streak + ";max:" + maxStreak).getBytes());
-
-          if (!streakIncreased) {
-            streakIncreased = true;
-          }
-        } else {
-          if (streakIncreased) {
-            streak = 0;
-            streakIncreased = false;
-
-            saveBytes("streak", ("streak:" + streak + ";max:" + maxStreak + ";").getBytes());
-          }
+        if (streak > maxStreak) {
+          maxStreak = streak;
         }
 
-        total = newTotal;
-        error = null;
-      }
-      catch (Exception e) {
-        System.out.println("Error while gettig ticker total:");
-        e.printStackTrace();
+        saveBytes("streak", ("streak:" + streak + ";max:" + maxStreak).getBytes());
 
-        error = e.toString();
+        if (!streakIncreased) {
+          streakIncreased = true;
+        }
+      } else {
+        if (streakIncreased) {
+          streak = 0;
+          streakIncreased = false;
+
+          saveBytes("streak", ("streak:" + streak + ";max:" + maxStreak + ";").getBytes());
+        }
       }
 
-      lastTotalTimestamp = now;
+      total = newTotal;
+      error = null;
+    }
+    catch (Exception e) {
+      System.out.println("Error while gettig ticker total:");
+      e.printStackTrace();
+
+      error = e.toString();
     }
   }
 

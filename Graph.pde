@@ -14,32 +14,25 @@ class Graph {
   private int tickerOffsetY = 120;
   private int legendOffset = 60;
 
-  private long lastDataTimestamp = 0;
 
   void getData() {
-    long now = Instant.ofEpochSecond(0L).until(Instant.now(), ChronoUnit.SECONDS);
+    GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/stats");
+    request.addHeader("Authorization", apiKey);
+    request.send();
 
-    if (lastDataTimestamp == 0 || (now - lastDataTimestamp) > refreshInterval) {
-      GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/stats");
-      request.addHeader("Authorization", apiKey);
-      request.send();
+    String result = request.getContent();
 
-      String result = request.getContent();
+    int[] arr = gson.fromJson(result, int[].class);
+    data = arr;
 
-      int[] arr = gson.fromJson(result, int[].class);
-      data = arr;
+    highest = findHighest(data);
+    lowest = findLowest(data);
+    middle = (highest + lowest) / 2;
 
-      highest = findHighest(data);
-      lowest = findLowest(data);
-      middle = (highest + lowest) / 2;
-      
-      legendOffset = String.valueOf(highest).length() * 30;
+    legendOffset = String.valueOf(highest).length() * 30;
 
-      if (data != null && data.length > 0) {
-        stepSize = (width - legendOffset) / data.length;
-      }
-
-      lastDataTimestamp = now;
+    if (data != null && data.length > 0) {
+      stepSize = (width - legendOffset) / data.length;
     }
   }
 
