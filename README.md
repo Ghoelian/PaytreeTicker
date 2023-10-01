@@ -21,14 +21,13 @@ To run, you need to place `variables.json` in `PatreeTicker/data/`, with the fol
 }
 ```
 
+These scripts were built for a headless install of Raspberry Pi OS, but should work with any headless distro with X11 and systemd.
+
+On a headless Raspberry Pi, you should disable screen blanking in `raspi-config` to prevent the X server from sleeping after a while.
+
 ### Start ticker as x server
 ```bash
 #!/bin/bash
-# Disable sleep and related settings
-xset s off
-xset -dpms
-xset s noblank
-
 # Start ticker as X server on screen 0
 xinit /home/{user}/PaytreeTicker/linux-aarch64/PaytreeTicker $* -- :0
 ```
