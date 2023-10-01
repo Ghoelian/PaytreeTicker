@@ -29,7 +29,7 @@ class Graph {
     lowest = findLowest(data);
     middle = (highest + lowest) / 2;
 
-    legendOffset = String.valueOf(highest).length() * 30;
+    legendOffset = String.valueOf(highest).length() + 70;
 
     if (data != null && data.length > 0) {
       stepSize = (width - legendOffset) / data.length;
