@@ -1,10 +1,12 @@
 #!/bin/bash
-rm "linux-aarch64.tar.gz"
-rm "linux-amd64.tar.gz"
-rm "linux-arm.tar.gz"
-rm "windows-amd64.tar.gz"
+mkdir ./build
 
-tar -czf "linux-aarch64.tar.gz" "./linux-aarch64"
-tar -czf "linux-amd64.tar.gz" "./linux-amd64"
-tar -czf "linux-arm.tar.gz" "./linux-arm"
-tar -czf "windows-amd64.tar.gz" "./windows-amd64"
+rm build/linux-aarch64.tar.gz
+rm build/linux-amd64.tar.gz
+rm build/linux-arm.tar.gz
+rm build/windows-amd64.tar.gz
+
+tar -czf build/linux-aarch64.tar.gz ./linux-aarch64
+tar -czf build/linux-amd64.tar.gz ./linux-amd64
+tar -czf buildlinux-arm.tar.gz ./linux-arm
+tar -czf build/windows-amd64.tar.gz ./windows-amd64
