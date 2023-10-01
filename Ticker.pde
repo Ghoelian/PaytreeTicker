@@ -106,9 +106,9 @@ class Ticker {
     }
 
     if (streakIncreased) {
-      text("^", width - 50, height);
+      text("^", width - 25, height);
     } else {
-      text("-", width - 50, height);
+      text("-", width - 25, height);
     }
   }
 }
