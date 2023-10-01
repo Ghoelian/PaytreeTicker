@@ -9,3 +9,5 @@ The indicator to the right of the total indicates wether the total turnover has 
 The colour of the indicator is mapped from 0 to the max streak the program has recorded, to hsv(0), hsv(120) for red to yellow to green.
 
 These values are saved to a file, so the max streak is remembered.
+
+CPU usage when idle is pretty low on a Raspberry Pi  4, averaging around 0.5 CPU%, and spiking to 10-20 CPU% when getting data.
