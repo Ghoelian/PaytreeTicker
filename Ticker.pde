@@ -8,9 +8,15 @@ import java.time.ZoneId;
 
 int tickerOffsetY = 120;
 
+static byte day = 0000;
+static byte week = 0001;
+static byte month = 0010;
+static byte year = 0100;
+
 class Ticker {
+  private byte state = day;
   private int textOffset = 25;
-  
+
   private int streak = 0;
   private int maxStreak = 0;
 
@@ -31,7 +37,9 @@ class Ticker {
 
       this.streak = parseInt(parts[0].split(":")[1]);
       this.maxStreak = parseInt(parts[1].split(":")[1]);
-    } catch (Exception e) {}
+    }
+    catch (Exception e) {
+    }
   }
 
   void getTotal() {
@@ -77,6 +85,10 @@ class Ticker {
   }
 
   void drawTicker() {
+    state += 0001;
+
+    if (state >= 1000) state = 0000;
+
     getTotal();
 
     fill(255);
@@ -85,8 +97,37 @@ class Ticker {
     textSize(primaryTextSize);
 
     if (error != null) {
-      text(error, 80, height);
+      text(error, legendOffset, (height - tickerOffsetY) + textOffset);
     } else {
+      textAlign(LEFT);
+      textSize(20);
+      translate(legendOffset - 15, (height - tickerOffsetY) + textOffset + 10);
+
+      rotate(PI*1.5);
+
+      fill(disabledTextColor);
+
+      if (state == day) fill(primaryTextColor);
+      text("D", 0, 0);
+      fill(disabledTextColor);
+
+      if (state == week) fill(primaryTextColor);
+      text("W", -20, 0);
+      fill(disabledTextColor);
+
+      if (state == month) fill(primaryTextColor);
+      text("M", -40, 0);
+      fill(disabledTextColor);
+
+      if (state == year) fill(primaryTextColor);
+      text("Y", -60, 0);
+
+      fill(primaryTextColor);
+
+      textAlign(LEFT, TOP);
+      textSize(primaryTextSize);
+      rotate(HALF_PI);
+      translate(-(legendOffset - 5), -((height - tickerOffsetY) + textOffset + 10));
       text(String.format("%,d", total) + "×", legendOffset, (height - tickerOffsetY) + textOffset);
     }
 

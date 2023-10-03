@@ -6,6 +6,9 @@ PFont roboto;
 static int primaryTextSize = 80;
 static int secondaryTextSize = 40;
 
+static int primaryTextColor = 255;
+static int disabledTextColor = 128;
+
 static String apiKey = "";
 
 private long lastTotalTimestamp = 0;
