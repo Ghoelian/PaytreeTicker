@@ -46,7 +46,7 @@ void drawStuff(boolean skipInterval) {
     background(0);
 
     try {
-      ticker.drawTicker();
+      ticker.drawTicker(now, refreshInterval);
       graph.drawGraph();
     }
     catch(Exception e) {

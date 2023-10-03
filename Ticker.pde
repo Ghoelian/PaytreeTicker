@@ -8,13 +8,15 @@ import java.time.ZoneId;
 
 int tickerOffsetY = 120;
 
-static byte day = 0000;
-static byte week = 0001;
-static byte month = 0010;
-static byte year = 0100;
+static int day = 0;
+static int week = 1;
+static int month = 2;
+static int year = 3;
 
 class Ticker {
-  private byte state = day;
+  private long lastTimestamp = 0;
+
+  private int state = day;
   private int textOffset = 25;
 
   private int streak = 0;
@@ -84,12 +86,15 @@ class Ticker {
     }
   }
 
-  void drawTicker() {
-    state += 0001;
+  void drawTicker(long now, int refreshInterval) {
+    if (state >= 4) state = 0;
 
-    if (state >= 1000) state = 0000;
+    if (lastTimestamp == 0 || (now - lastTimestamp) > refreshInterval * 5) {
+      System.out.println("Refresh data");
+      getTotal();
 
-    getTotal();
+      lastTimestamp = now;
+    }
 
     fill(255);
 
@@ -141,5 +146,7 @@ class Ticker {
     } else {
       text("-", width - 80, (height - tickerOffsetY) + textOffset);
     }
+
+    state += 1;
   }
 }
