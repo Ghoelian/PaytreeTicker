@@ -6,31 +6,32 @@ import java.time.temporal.ChronoUnit;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+int tickerOffsetY = 120;
+
 class Ticker {
+  private int textOffset = 25;
+  
   private int streak = 0;
   private int maxStreak = 0;
 
   private boolean streakIncreased = false;
 
-  private BigDecimal total = BigDecimal.ZERO;
-
-  private DecimalFormat df = new DecimalFormat();
+  private int total = 0;
 
   private String error;
 
   Ticker() {
-    df.setMaximumFractionDigits(2);
-    df.setMinimumFractionDigits(2);
+    try {
+      byte b[] = loadBytes("streak");
 
-    byte b[] = loadBytes("streak");
+      if (b == null) return;
 
-    if (b == null) return;
+      String streakVals = new String(b);
+      String parts[] = streakVals.split(";");
 
-    String streakVals = new String(b);
-    String parts[] = streakVals.split(";");
-
-    this.streak = parseInt(parts[0].split(":")[1]);
-    this.maxStreak = parseInt(parts[1].split(":")[1]);
+      this.streak = parseInt(parts[0].split(":")[1]);
+      this.maxStreak = parseInt(parts[1].split(":")[1]);
+    } catch (Exception e) {}
   }
 
   void getTotal() {
@@ -41,9 +42,9 @@ class Ticker {
     String result = request.getContent();
 
     try {
-      BigDecimal newTotal = new BigDecimal(result);
+      int newTotal = Integer.parseInt(result);
 
-      if (newTotal.compareTo(total) > 0) {
+      if (newTotal > total) {
         streak += 1;
 
         if (streak > maxStreak) {
@@ -80,17 +81,14 @@ class Ticker {
 
     fill(255);
 
-    textAlign(LEFT, BOTTOM);
+    textAlign(LEFT, TOP);
     textSize(primaryTextSize);
 
     if (error != null) {
       text(error, 80, height);
     } else {
-      text("€", 10, height - 15);
-      text(df.format(total), 80, height - 15);
+      text(String.format("%,d", total) + "×", legendOffset, (height - tickerOffsetY) + textOffset);
     }
-
-    textAlign(RIGHT, BOTTOM);
 
     if (streak > 0) {
       float val = map(streak, 0, maxStreak, 0, 120);
@@ -98,9 +96,9 @@ class Ticker {
     }
 
     if (streakIncreased) {
-      text("^", width - 25, height - 5);
+      text("^", width - 80, (height - tickerOffsetY + 10) + textOffset);
     } else {
-      text("-", width - 25, height - 20);
+      text("-", width - 80, (height - tickerOffsetY) + textOffset);
     }
   }
 }

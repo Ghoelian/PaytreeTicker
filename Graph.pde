@@ -1,5 +1,7 @@
 import com.google.gson.Gson;
 
+int legendOffset = 60;
+
 class Graph {
   private Gson gson = new Gson();
 
@@ -10,10 +12,6 @@ class Graph {
   private int lowest;
 
   private int stepSize;
-
-  private int tickerOffsetY = 120;
-  private int legendOffset = 60;
-
 
   void getData() {
     GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/stats");
