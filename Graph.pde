@@ -58,17 +58,29 @@ class Graph {
     if (data != null) {
       stroke(24, 94.6, 94.9);
       strokeWeight(2);
+
       for (int i = 0; i < data.length; i++) {
         int current = this.data[i];
 
         if (i < data.length - 1) {
           int next = data[i + 1];
 
+          float currentLineY = map(current, lowest, highest, height - tickerOffsetY - 4, 10);
+          float nextLineY = map(next, lowest, highest, height - tickerOffsetY - 4, 10);
+
+          if (Float.isNaN(currentLineY)) {
+            currentLineY = height - tickerOffsetY;
+          }
+
+          if (Float.isNaN(nextLineY)) {
+            nextLineY = height - tickerOffsetY;
+          }
+
           line(
             (i * stepSize) + legendOffset + 4,
-            map(current, lowest, highest, height - tickerOffsetY - 4, 10),
+            currentLineY,
             ((i + 1) * stepSize) + legendOffset + 4,
-            map(next, lowest, highest, height - tickerOffsetY - 4, 10)
+            nextLineY
             );
         }
       }
