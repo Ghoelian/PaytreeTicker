@@ -10,21 +10,7 @@ import com.google.gson.Gson;
 int tickerOffsetY = 130;
 
 public enum State {
-  DAY("day"), WEEK("week"), MONTH("month"), YEAR("year"), ALL("all");
-
-  private State(String state) {
-    this.state = state;
-  }
-
-  private String state;
-
-  public String getState() {
-    return this.state;
-  }
-
-  public String toString() {
-    return this.state;
-  }
+  DAY, WEEK, MONTH, YEAR, ALL;
 
   public State increment(State state) {
     switch (state) {
