@@ -13,6 +13,8 @@ class Graph {
 
   private int stepSize;
 
+  private long lastTimestamp = 0;
+
   void getData() {
     GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/stats");
     request.addHeader("Authorization", apiKey);
@@ -36,8 +38,13 @@ class Graph {
     }
   }
 
-  void drawGraph() {
-    getData();
+  void drawGraph(long now) {
+    // Refresh data after state has cycled through all states, wrapping it back around to day
+    if (lastTimestamp == 0 || (now - lastTimestamp) > refreshInterval * State.values().length) {
+      getData();
+
+      lastTimestamp = now;
+    }
 
     fill(255);
     stroke(255);
