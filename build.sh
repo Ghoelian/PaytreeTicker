@@ -1,8 +1,22 @@
 #!/bin/bash
+clear
+
+folders=("linux-amd64" "linux-arm" "linux-aarch64" "windows-amd64")
+
+echo "clearing old builds..."
 rm -rf ./build
 mkdir ./build
 
-tar -czf build/linux-aarch64.tar.gz ./linux-aarch64
-tar -czf build/linux-amd64.tar.gz ./linux-amd64
-tar -czf build/linux-arm.tar.gz ./linux-arm
-tar -czf build/windows-amd64.tar.gz ./windows-amd64
+for folder in "${folders[@]}"
+do
+  echo "zipping $folder..."
+  tar -czf "build/$folder.tar.gz" "./$folder"
+done
+
+for folder in "${folders[@]}"
+do
+  echo "cleaning up $folder..."
+  rm -rf "./$folder"
+done
+
+echo "done"
