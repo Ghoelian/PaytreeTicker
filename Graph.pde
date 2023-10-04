@@ -49,8 +49,10 @@ class Graph {
     fill(255);
     stroke(255);
 
-    line(legendOffset, 10, legendOffset, height - tickerOffsetY);
-    line(legendOffset, height - tickerOffsetY, width - 10, height - tickerOffsetY);
+    int legendY = height - tickerOffsetY;
+
+    line(legendOffset, 10, legendOffset, legendY);
+    line(legendOffset, height - tickerOffsetY, width - 10, legendY);
 
     textSize(secondaryTextSize);
 
@@ -73,38 +75,41 @@ class Graph {
       stroke(24, 94.6, 94.9);
       strokeWeight(2);
 
-      for (int i = 0; i < data.length; i++) {
+      int graphOffset = 4;
+
+      // Draw lines between all data points, connecting first to second etc.
+      // which means the second-to-last datapoint will connect to the final datapoint,
+      // so we can skip drawing a line from the last datapoint to nothing.
+      for (int i = 0; i < data.length - 1; i++) {
         int current = this.data[i];
 
-        if (i < data.length - 1) {
-          int next = data[i + 1];
+        int next = data[i + 1];
 
-          float currentLineY;
-          float nextLineY;
+        float currentLineY;
+        float nextLineY;
 
-          if (highest == middle) {
-            currentLineY = map(current, highest, highest, height - tickerOffsetY - 4, 10);
-            nextLineY = map(next, highest, highest, height - tickerOffsetY - 4, 10);
-          } else {
-            currentLineY = map(current, lowest, highest, height - tickerOffsetY - 4, 10);
-            nextLineY = map(next, lowest, highest, height - tickerOffsetY - 4, 10);
-          }
+        float graphLowerY = legendY - graphOffset;
 
-          if (Float.isNaN(currentLineY)) {
-            currentLineY = map(5, 0, 10, height - tickerOffsetY - 4, 10);
-          }
-
-          if (Float.isNaN(nextLineY)) {
-            nextLineY = map(5, 0, 10, height - tickerOffsetY - 4, 10);
-          }
-
-          line(
-            (i * stepSize) + legendOffset + 4,
-            currentLineY,
-            ((i + 1) * stepSize) + legendOffset + 4,
-            nextLineY
-            );
+        if (highest == middle) {
+          currentLineY = map(current, highest, highest, graphLowerY, 10);
+          nextLineY = map(next, highest, highest, graphLowerY, 10);
+        } else {
+          currentLineY = map(current, lowest, highest, graphLowerY, 10);
+          nextLineY = map(next, lowest, highest, graphLowerY, 10);
         }
+
+        if (Float.isInfinite(currentLineY)) currentLineY = graphLowerY;
+        if (Float.isNaN(currentLineY)) currentLineY = 10;
+
+        if (Float.isInfinite(nextLineY)) nextLineY = graphLowerY;
+        if (Float.isNaN(nextLineY)) nextLineY = 10;
+
+        line(
+          (i * stepSize) + legendOffset + graphOffset,
+          currentLineY,
+          ((i + 1) * stepSize) + legendOffset + graphOffset,
+          nextLineY
+          );
       }
     }
   }
