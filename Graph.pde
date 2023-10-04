@@ -56,20 +56,16 @@ class Graph {
 
     textSize(secondaryTextSize);
 
-    if (highest > middle) {
-      textAlign(LEFT, TOP);
-      text(highest, 10, 10);
+    textAlign(LEFT, TOP);
+    text(highest, 10, 10);
+
+    if (middle != highest && middle != lowest) {
+      textAlign(LEFT, CENTER);
+      text(middle, 10, legendY / 2);
     }
 
-
-    textAlign(LEFT, CENTER);
-    text(middle, 10, (height - tickerOffsetY) / 2);
-
-    if (lowest < middle) {
-      textAlign(LEFT, BOTTOM);
-      text(lowest, 10, height - tickerOffsetY);
-    }
-
+    textAlign(LEFT, BOTTOM);
+    text(lowest, 10, legendY);
 
     if (data != null) {
       stroke(24, 94.6, 94.9);
