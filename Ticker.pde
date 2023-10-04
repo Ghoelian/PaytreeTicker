@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import com.google.gson.Gson;
 
-int tickerOffsetY = 120;
+int tickerOffsetY = 130;
 
 public enum State {
-  DAY("day"), WEEK("week"), MONTH("month"), YEAR("year");
+  DAY("day"), WEEK("week"), MONTH("month"), YEAR("year"), ALL("all");
 
   private State(String state) {
     this.state = state;
@@ -29,15 +29,17 @@ public enum State {
   public State increment(State state) {
     switch (state) {
     case DAY:
-      return State.WEEK;
+      return State.ALL;
     case WEEK:
-      return State.MONTH;
+      return State.DAY;
     case MONTH:
-      return State.YEAR;
+      return State.WEEK;
     case YEAR:
-      return State.DAY;
+      return State.MONTH;
+    case ALL:
+      return State.YEAR;
     default:
-      return State.DAY;
+      return State.ALL;
     }
   }
 }
@@ -47,6 +49,7 @@ class Totals {
   private int week;
   private int month;
   private int year;
+  private int all;
 
   Totals() {
   }
@@ -57,8 +60,8 @@ class Ticker {
 
   private long lastTimestamp = 0;
 
-  private State state = State.DAY;
-  private int textOffset = 25;
+  private State state = State.ALL;
+  private int textOffset = tickerOffsetY - 100;
 
   private int streak = 0;
   private int maxStreak = 0;
@@ -143,9 +146,13 @@ class Ticker {
     text(String.format("%,d", totals.year) + "×", x, y);
   }
 
+  void drawAll(int x, int y) {
+    text(String.format("%,d", totals.all) + "×", x, y);
+  }
+
   void drawTicker(long now, int refreshInterval) {
     // Refresh data after state has changed for the 5th time, wrapping it back around to day
-    if (lastTimestamp == 0 || (now - lastTimestamp) > refreshInterval * 5) {
+    if (lastTimestamp == 0 || (now - lastTimestamp) > refreshInterval * 6) {
       getTotal();
 
       lastTimestamp = now;
@@ -154,41 +161,52 @@ class Ticker {
     if (error != null) {
       text(error, legendOffset, (height - tickerOffsetY) + textOffset);
     } else if (this.totals != null) {
-      textAlign(RIGHT);
+      textAlign(RIGHT, BOTTOM);
       textSize(20);
 
       int x = width - 20;
       int y = (height - tickerOffsetY) + textOffset;
 
-      translate(x, y);
-
-      rotate(PI*1.5);
-
       fill(disabledTextColor);
+
+      int subtitleOffsetY = 85;
+
+      int letterSpacing = 12;
+      int spacing = 0;
+      int padding = 15;
 
       if (state == State.DAY) fill(primaryTextColor);
-      text("D", 0, 0);
+      text("DAY", x, y + subtitleOffsetY);
       fill(disabledTextColor);
+
+      spacing += ("DAY".length() * letterSpacing) + padding;
 
       if (state == State.WEEK) fill(primaryTextColor);
-      text("W", -20, 0);
+      text("WEEK", x - spacing, y + subtitleOffsetY);
       fill(disabledTextColor);
+
+      spacing += ("WEEK".length() * letterSpacing) + padding;
 
       if (state == State.MONTH) fill(primaryTextColor);
-      text("M", -40, 0);
+      text("MONTH", x - spacing, y + subtitleOffsetY);
       fill(disabledTextColor);
 
-      if (state == State.YEAR) fill(primaryTextColor);
-      text("Y", -60, 0);
+      spacing += ("MONTH".length() * letterSpacing) + padding;
 
-      rotate(HALF_PI);
-      translate(-x, -y);
+      if (state == State.YEAR) fill(primaryTextColor);
+      text("YEAR", x - spacing, y + subtitleOffsetY);
+      fill(disabledTextColor);
+
+      spacing += ("YEAR".length() * letterSpacing) + padding;
+
+      if (state == State.ALL) fill(primaryTextColor);
+      text("ALL", x - spacing, y + subtitleOffsetY);
 
       textAlign(RIGHT, TOP);
       textSize(primaryTextSize);
       fill(primaryTextColor);
 
-      x = x - 20;
+      y -= 20;
 
       switch (state) {
       case DAY:
@@ -203,9 +221,10 @@ class Ticker {
       case YEAR:
         drawYear(x, y);
         break;
+      case ALL:
+        drawAll(x, y);
+        break;
       }
-
-      x = x + 20;
 
       if (streak > 0) {
         float val = map(streak, 0, maxStreak, 0, 120);
@@ -214,9 +233,9 @@ class Ticker {
 
       textAlign(LEFT, TOP);
       if (streakIncreased) {
-        text("^", legendOffset, (height - tickerOffsetY + 10) + textOffset);
+        text("^", legendOffset, y + 10);
       } else {
-        text("-", legendOffset, (height - tickerOffsetY) + textOffset);
+        text("-", legendOffset, y);
       }
 
       state = state.increment(state);
