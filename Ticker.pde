@@ -5,18 +5,59 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import com.google.gson.Gson;
 
 int tickerOffsetY = 120;
 
-static int day = 0;
-static int week = 1;
-static int month = 2;
-static int year = 3;
+public enum State {
+  DAY("day"), WEEK("week"), MONTH("month"), YEAR("year");
+
+  private State(String state) {
+    this.state = state;
+  }
+
+  private String state;
+
+  public String getState() {
+    return this.state;
+  }
+
+  public String toString() {
+    return this.state;
+  }
+
+  public State increment(State state) {
+    switch (state) {
+    case DAY:
+      return State.WEEK;
+    case WEEK:
+      return State.MONTH;
+    case MONTH:
+      return State.YEAR;
+    case YEAR:
+      return State.DAY;
+    default:
+      return State.DAY;
+    }
+  }
+}
+
+class Totals {
+  private int day;
+  private int week;
+  private int month;
+  private int year;
+
+  Totals() {
+  }
+}
 
 class Ticker {
+  private Gson gson = new Gson();
+
   private long lastTimestamp = 0;
 
-  private int state = day;
+  private State state = State.DAY;
   private int textOffset = 25;
 
   private int streak = 0;
@@ -24,7 +65,7 @@ class Ticker {
 
   private boolean streakIncreased = false;
 
-  private int total = 0;
+  private Totals totals;
 
   private String error;
 
@@ -52,9 +93,9 @@ class Ticker {
     String result = request.getContent();
 
     try {
-      int newTotal = Integer.parseInt(result);
+      Totals newTotals = gson.fromJson(result, Totals.class);
 
-      if (newTotal > total) {
+      if (totals == null || newTotals.day > totals.day) {
         streak += 1;
 
         if (streak > maxStreak) {
@@ -75,7 +116,7 @@ class Ticker {
         }
       }
 
-      total = newTotal;
+      totals = newTotals;
       error = null;
     }
     catch (Exception e) {
@@ -86,67 +127,99 @@ class Ticker {
     }
   }
 
-  void drawTicker(long now, int refreshInterval) {
-    if (state >= 4) state = 0;
+  void drawDay(int x, int y) {
+    text(String.format("%,d", totals.day) + "×", x, y);
+  }
 
+  void drawWeek(int x, int y) {
+    text(String.format("%,d", totals.week) + "×", x, y);
+  }
+
+  void drawMonth(int x, int y) {
+    text(String.format("%,d", totals.month) + "×", x, y);
+  }
+
+  void drawYear(int x, int y) {
+    text(String.format("%,d", totals.year) + "×", x, y);
+  }
+
+  void drawTicker(long now, int refreshInterval) {
+    // Refresh data after state has changed for the 5th time, wrapping it back around to day
     if (lastTimestamp == 0 || (now - lastTimestamp) > refreshInterval * 5) {
-      System.out.println("Refresh data");
       getTotal();
 
       lastTimestamp = now;
     }
 
-    fill(255);
-
-    textAlign(LEFT, TOP);
-    textSize(primaryTextSize);
-
     if (error != null) {
       text(error, legendOffset, (height - tickerOffsetY) + textOffset);
-    } else {
-      textAlign(LEFT);
+    } else if (this.totals != null) {
+      textAlign(RIGHT);
       textSize(20);
-      translate(legendOffset - 15, (height - tickerOffsetY) + textOffset + 10);
+
+      int x = width - 20;
+      int y = (height - tickerOffsetY) + textOffset;
+
+      translate(x, y);
 
       rotate(PI*1.5);
 
       fill(disabledTextColor);
 
-      if (state == day) fill(primaryTextColor);
+      if (state == State.DAY) fill(primaryTextColor);
       text("D", 0, 0);
       fill(disabledTextColor);
 
-      if (state == week) fill(primaryTextColor);
+      if (state == State.WEEK) fill(primaryTextColor);
       text("W", -20, 0);
       fill(disabledTextColor);
 
-      if (state == month) fill(primaryTextColor);
+      if (state == State.MONTH) fill(primaryTextColor);
       text("M", -40, 0);
       fill(disabledTextColor);
 
-      if (state == year) fill(primaryTextColor);
+      if (state == State.YEAR) fill(primaryTextColor);
       text("Y", -60, 0);
 
+      rotate(HALF_PI);
+      translate(-x, -y);
+
+      textAlign(RIGHT, TOP);
+      textSize(primaryTextSize);
       fill(primaryTextColor);
 
+      x = x - 20;
+
+      switch (state) {
+      case DAY:
+        drawDay(x, y);
+        break;
+      case WEEK:
+        drawWeek(x, y);
+        break;
+      case MONTH:
+        drawMonth(x, y);
+        break;
+      case YEAR:
+        drawYear(x, y);
+        break;
+      }
+
+      x = x + 20;
+
+      if (streak > 0) {
+        float val = map(streak, 0, maxStreak, 0, 120);
+        fill(val, 255, 255);
+      }
+
       textAlign(LEFT, TOP);
-      textSize(primaryTextSize);
-      rotate(HALF_PI);
-      translate(-(legendOffset - 5), -((height - tickerOffsetY) + textOffset + 10));
-      text(String.format("%,d", total) + "×", legendOffset, (height - tickerOffsetY) + textOffset);
-    }
+      if (streakIncreased) {
+        text("^", legendOffset, (height - tickerOffsetY + 10) + textOffset);
+      } else {
+        text("-", legendOffset, (height - tickerOffsetY) + textOffset);
+      }
 
-    if (streak > 0) {
-      float val = map(streak, 0, maxStreak, 0, 120);
-      fill(val, 94.6, 94.9);
+      state = state.increment(state);
     }
-
-    if (streakIncreased) {
-      text("^", width - 80, (height - tickerOffsetY + 10) + textOffset);
-    } else {
-      text("-", width - 80, (height - tickerOffsetY) + textOffset);
-    }
-
-    state += 1;
   }
 }
