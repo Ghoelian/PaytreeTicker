@@ -81,7 +81,6 @@ class Ticker {
       String streakVals = new String(b);
       String parts[] = streakVals.split(";");
 
-      this.streak = parseInt(parts[0].split(":")[1]);
       this.maxStreak = parseInt(parts[1].split(":")[1]);
     }
     catch (Exception e) {
@@ -98,7 +97,7 @@ class Ticker {
     try {
       Totals newTotals = gson.fromJson(result, Totals.class);
 
-      if (totals == null || newTotals.day > totals.day) {
+      if (totals != null && newTotals.day > totals.day) {
         streak += 1;
 
         if (streak > maxStreak) {
