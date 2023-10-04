@@ -27,6 +27,8 @@ class Graph {
     lowest = findLowest(data);
     middle = (highest + lowest) / 2;
 
+    if (middle == lowest) middle = highest;
+
     legendOffset = String.valueOf(highest).length() * 36;
 
     if (data != null && data.length > 0) {
@@ -45,14 +47,19 @@ class Graph {
 
     textSize(secondaryTextSize);
 
-    textAlign(LEFT, TOP);
-    text(highest, 10, 10);
+    if (highest > middle) {
+      textAlign(LEFT, TOP);
+      text(highest, 10, 10);
+    }
+
 
     textAlign(LEFT, CENTER);
     text(middle, 10, (height - tickerOffsetY) / 2);
 
-    textAlign(LEFT, BOTTOM);
-    text(lowest, 10, height - tickerOffsetY);
+    if (lowest < middle) {
+      textAlign(LEFT, BOTTOM);
+      text(lowest, 10, height - tickerOffsetY);
+    }
 
 
     if (data != null) {
@@ -65,15 +72,23 @@ class Graph {
         if (i < data.length - 1) {
           int next = data[i + 1];
 
-          float currentLineY = map(current, lowest, highest, height - tickerOffsetY - 4, 10);
-          float nextLineY = map(next, lowest, highest, height - tickerOffsetY - 4, 10);
+          float currentLineY;
+          float nextLineY;
+
+          if (highest == middle) {
+            currentLineY = map(current, highest, highest, height - tickerOffsetY - 4, 10);
+            nextLineY = map(next, highest, highest, height - tickerOffsetY - 4, 10);
+          } else {
+            currentLineY = map(current, lowest, highest, height - tickerOffsetY - 4, 10);
+            nextLineY = map(next, lowest, highest, height - tickerOffsetY - 4, 10);
+          }
 
           if (Float.isNaN(currentLineY)) {
-            currentLineY = height - tickerOffsetY;
+            currentLineY = map(5, 0, 10, height - tickerOffsetY - 4, 10);
           }
 
           if (Float.isNaN(nextLineY)) {
-            nextLineY = height - tickerOffsetY;
+            nextLineY = map(5, 0, 10, height - tickerOffsetY - 4, 10);
           }
 
           line(
