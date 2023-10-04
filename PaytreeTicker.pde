@@ -9,7 +9,7 @@ static int secondaryTextSize = 40;
 static int primaryTextColor = 255;
 static int disabledTextColor = 128;
 
-static String apiKey = "";
+static String apiKey = System.getenv("PAYTREE_API_KEY");
 
 private long lastTotalTimestamp = 0;
 
@@ -19,10 +19,6 @@ Graph graph;
 void setup() {
   size(800, 480);
   noCursor();
-
-  variables = loadJSONObject("variables.json");
-
-  apiKey = variables.getString("apiKey");
 
   roboto = createFont("noto-sans-mono.ttf", 32);
   textFont(roboto);
