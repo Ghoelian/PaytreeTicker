@@ -19,7 +19,6 @@ Graph graph;
 void setup() {
   size(800, 480);
   noCursor();
-  frameRate(10);
 
   variables = loadJSONObject("variables.json");
 
