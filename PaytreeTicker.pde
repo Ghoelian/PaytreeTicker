@@ -17,6 +17,15 @@ Ticker ticker;
 Graph graph;
 
 void setup() {
+  if (args != null && args.length > 0) {
+    try {
+      refreshInterval = Integer.parseInt(args[0]);
+    }
+    catch (NumberFormatException e) {
+      refreshInterval = 5;
+    }
+  }
+
   size(800, 480);
   noCursor();
 
