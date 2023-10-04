@@ -135,9 +135,9 @@ class Ticker {
     text(String.format("%,d", totals.all) + "×", x, y);
   }
 
-  void drawTicker(long now, int refreshInterval) {
-    // Refresh data after state has changed for the 5th time, wrapping it back around to day
-    if (lastTimestamp == 0 || (now - lastTimestamp) > refreshInterval * 6) {
+  void drawTicker(long now) {
+    // Refresh data after state has cycled through all states, wrapping it back around to day
+    if (lastTimestamp == 0 || (now - lastTimestamp) > refreshInterval * State.values().length) {
       getTotal();
 
       lastTimestamp = now;
