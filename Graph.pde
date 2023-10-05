@@ -64,8 +64,10 @@ class Graph {
       text(middle, 10, legendY / 2);
     }
 
-    textAlign(LEFT, BOTTOM);
-    text(lowest, 10, legendY);
+    if (lowest != highest) {
+      textAlign(LEFT, BOTTOM);
+      text(lowest, 10, legendY);
+    }
 
     if (data != null) {
       stroke(24, 94.6, 94.9);
