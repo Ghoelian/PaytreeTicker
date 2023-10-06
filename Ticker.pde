@@ -7,19 +7,17 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import com.google.gson.Gson;
 
-int tickerOffsetY = 130;
+int tickerOffsetY = 150;
 
 public enum State {
-  EIGHT_HOURS, DAY, WEEK, MONTH, YEAR, ALL;
+  EIGHT_HOURS, WEEK, MONTH, YEAR, ALL;
 
   public State increment(State state) {
     switch (state) {
     case EIGHT_HOURS:
       return State.ALL;
-    case DAY:
-      return State.EIGHT_HOURS;
     case WEEK:
-      return State.DAY;
+      return State.EIGHT_HOURS;
     case MONTH:
       return State.WEEK;
     case YEAR:
@@ -34,7 +32,6 @@ public enum State {
 
 class Totals {
   private int eightHours;
-  private int day;
   private int week;
   private int month;
   private int year;
@@ -86,7 +83,7 @@ class Ticker {
     try {
       Totals newTotals = gson.fromJson(result, Totals.class);
 
-      if (totals != null && newTotals.day > totals.day) {
+      if (totals != null && newTotals.eightHours > totals.eightHours) {
         streak += 1;
 
         if (streak > maxStreak) {
@@ -120,10 +117,6 @@ class Ticker {
 
   void drawEightHours(int x, int y) {
     text(String.format("%,d", totals.eightHours) + "×", x, y);
-  }
-
-  void drawDay(int x, int y) {
-    text(String.format("%,d", totals.day) + "×", x, y);
   }
 
   void drawWeek(int x, int y) {
@@ -173,12 +166,6 @@ class Ticker {
 
       spacing += ("8HRS".length() * letterSpacing) + padding;
 
-      if (state == State.DAY) fill(primaryTextColor);
-      text("DAY", x- spacing, y + subtitleOffsetY);
-      fill(disabledTextColor);
-
-      spacing += ("DAY".length() * letterSpacing) + padding;
-
       if (state == State.WEEK) fill(primaryTextColor);
       text("WEEK", x - spacing, y + subtitleOffsetY);
       fill(disabledTextColor);
@@ -209,9 +196,6 @@ class Ticker {
       switch (state) {
       case EIGHT_HOURS:
         drawEightHours(x, y);
-        break;
-      case DAY:
-        drawDay(x, y);
         break;
       case WEEK:
         drawWeek(x, y);

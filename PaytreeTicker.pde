@@ -1,4 +1,4 @@
-JSONObject variables;
+static String apiKey = System.getenv("PAYTREE_API_KEY");
 
 static int refreshInterval = 5;
 
@@ -8,8 +8,6 @@ static int secondaryTextSize = 40;
 
 static int primaryTextColor = 255;
 static int disabledTextColor = 128;
-
-static String apiKey = System.getenv("PAYTREE_API_KEY");
 
 private long lastTotalTimestamp = 0;
 
