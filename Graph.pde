@@ -1,9 +1,15 @@
 import com.google.gson.Gson;
+import java.time.format.DateTimeFormatter;
 
 int legendOffset = 60;
+DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm");
+DateTimeFormatter dateTime = DateTimeFormatter.ofPattern("dd/MM HH:mm");
 
 class Graph {
   private Gson gson = new Gson();
+
+  private LocalDateTime startDate;
+  private LocalDateTime endDate;
 
   private int[] data;
 
@@ -15,7 +21,52 @@ class Graph {
 
   private long lastTimestamp = 0;
 
+  LocalDateTime getStartDate() {
+    LocalDateTime now = LocalDateTime.now();
+    int div = now.getMinute() / refreshInterval;
+
+    int nearestMultiple = div * refreshInterval;
+
+    if (nearestMultiple == 60) {
+      nearestMultiple = 0;
+
+      now.plusHours(1);
+    }
+
+    return LocalDateTime.of(
+      now.getYear(),
+      now.getMonth(),
+      now.getDayOfMonth(),
+      now.getHour(),
+      nearestMultiple
+      ).minusHours(8);
+  }
+
+  LocalDateTime getEndDate() {
+    LocalDateTime now = LocalDateTime.now();
+    int div = now.getMinute() / refreshInterval;
+
+    int nearestMultiple = div * refreshInterval;
+
+    if (nearestMultiple == 60) {
+      nearestMultiple = 0;
+
+      now.plusHours(1);
+    }
+
+    return LocalDateTime.of(
+      now.getYear(),
+      now.getMonth(),
+      now.getDayOfMonth(),
+      now.getHour(),
+      nearestMultiple
+      );
+  }
+
   void getData() {
+    startDate = getStartDate();
+    endDate = getEndDate();
+
     GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/stats");
     request.addHeader("Authorization", apiKey);
     request.send();
@@ -31,7 +82,7 @@ class Graph {
 
     if (middle == lowest) middle = highest;
 
-    legendOffset = String.valueOf(highest).length() * 36;
+    legendOffset = String.valueOf(highest).length() * 24;
 
     if (data != null && data.length > 0) {
       stepSize = (width - legendOffset) / data.length;
@@ -54,19 +105,34 @@ class Graph {
     line(legendOffset, 10, legendOffset, legendY);
     line(legendOffset, height - tickerOffsetY, width - 10, legendY);
 
-    textSize(secondaryTextSize);
+    textSize(20);
 
-    textAlign(LEFT, TOP);
-    text(highest, 10, 10);
+    textAlign(RIGHT, TOP);
+    text(highest, 35, 10);
 
     if (middle != highest && middle != lowest) {
-      textAlign(LEFT, CENTER);
-      text(middle, 10, legendY / 2);
+      textAlign(RIGHT, CENTER);
+      text(middle, 35, legendY / 2);
     }
 
     if (lowest != highest) {
+      textAlign(RIGHT, BOTTOM);
+      text(lowest, 35, legendY);
+    }
+
+    if (startDate != null) {
       textAlign(LEFT, BOTTOM);
-      text(lowest, 10, legendY);
+      text(startDate.toString(), legendOffset, legendY + 30);
+    }
+
+    if (endDate != null) {
+      textAlign(RIGHT, BOTTOM);
+
+      if (startDate.getDayOfMonth() == endDate.getDayOfMonth()) {
+        text(endDate.format(time), width - 10, legendY + 30);
+      } else {
+        text(endDate.format(dateTime), width - 10, legendY + 30);
+      }
     }
 
     if (data != null) {
