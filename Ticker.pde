@@ -10,12 +10,14 @@ import com.google.gson.Gson;
 int tickerOffsetY = 130;
 
 public enum State {
-  DAY, WEEK, MONTH, YEAR, ALL;
+  EIGHT_HOURS, DAY, WEEK, MONTH, YEAR, ALL;
 
   public State increment(State state) {
     switch (state) {
-    case DAY:
+    case EIGHT_HOURS:
       return State.ALL;
+    case DAY:
+      return State.EIGHT_HOURS;
     case WEEK:
       return State.DAY;
     case MONTH:
@@ -31,6 +33,7 @@ public enum State {
 }
 
 class Totals {
+  private int eightHours;
   private int day;
   private int week;
   private int month;
@@ -115,6 +118,10 @@ class Ticker {
     }
   }
 
+  void drawEightHours(int x, int y) {
+    text(String.format("%,d", totals.eightHours) + "×", x, y);
+  }
+
   void drawDay(int x, int y) {
     text(String.format("%,d", totals.day) + "×", x, y);
   }
@@ -160,8 +167,14 @@ class Ticker {
       int spacing = 0;
       int padding = 15;
 
+      if (state == State.EIGHT_HOURS) fill(primaryTextColor);
+      text("8HRS", x - spacing, y + subtitleOffsetY);
+      fill(disabledTextColor);
+
+      spacing += ("8HRS".length() * letterSpacing) + padding;
+
       if (state == State.DAY) fill(primaryTextColor);
-      text("DAY", x, y + subtitleOffsetY);
+      text("DAY", x- spacing, y + subtitleOffsetY);
       fill(disabledTextColor);
 
       spacing += ("DAY".length() * letterSpacing) + padding;
@@ -194,6 +207,9 @@ class Ticker {
       y -= 20;
 
       switch (state) {
+      case EIGHT_HOURS:
+        drawEightHours(x, y);
+        break;
       case DAY:
         drawDay(x, y);
         break;
