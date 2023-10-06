@@ -122,7 +122,12 @@ class Graph {
 
     if (startDate != null) {
       textAlign(LEFT, BOTTOM);
-      text(startDate.toString(), legendOffset, legendY + 30);
+
+      if (startDate.getDayOfMonth() == endDate.getDayOfMonth()) {
+        text(startDate.format(time), legendOffset, legendY + 30);
+      } else {
+        text(startDate.format(dateTime), legendOffset, legendY + 30);
+      }
     }
 
     if (endDate != null) {
