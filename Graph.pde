@@ -98,26 +98,27 @@ class Graph {
     }
 
     fill(255);
-    stroke(255);
 
     int legendY = height - tickerOffsetY;
 
+    stroke(115);
+    line(legendOffset, (legendY/3), width - 10, (legendY/3));
+    line(legendOffset, (legendY/3)*2, width - 10, (legendY/3)*2);
+
+    stroke(255);
     line(legendOffset, 10, legendOffset, legendY);
-    line(legendOffset, height - tickerOffsetY, width - 10, legendY);
+    line(legendOffset, legendY, width - 10, legendY);
 
     textSize(20);
 
-    textAlign(RIGHT, TOP);
-    text(highest, 35, 10);
+    textAlign(RIGHT, CENTER);
 
-    if (middle != highest && middle != lowest) {
-      textAlign(RIGHT, CENTER);
-      text(middle, 35, legendY / 2);
-    }
+    text(highest, 35, 20);
 
-    if (lowest != highest) {
-      textAlign(RIGHT, BOTTOM);
-      text(lowest, 35, legendY);
+    if (lowest < highest) {
+      text((int) map(2, 0, 3, lowest, highest), 35, (legendY/3));
+      text((int) map(1, 0, 3, lowest, highest), 35, (legendY/3)*2);
+      text(lowest, 35, legendY - 10);
     }
 
     if (startDate != null) {
