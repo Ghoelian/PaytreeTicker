@@ -48,8 +48,8 @@ void drawStuff(boolean skipInterval) {
     background(0);
 
     try {
-      graph.drawGraph(now);
-      ticker.drawTicker(now);
+      graph.drawGraph();
+      ticker.drawTicker();
     }
     catch(Exception e) {
       delay(5000);
