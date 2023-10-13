@@ -14,16 +14,13 @@ class Graph {
   private int[] data;
 
   private int highest;
-  private int middle;
   private int lowest;
-
-  private long lastTimestamp = 0;
 
   LocalDateTime getStartDate() {
     LocalDateTime now = LocalDateTime.now();
     Double div = Double.valueOf(now.getMinute()) / Double.valueOf(refreshInterval);
 
-    int nearestMultiple = div.intValue() * refreshInterval;
+    int nearestMultiple = ((int)Math.round(div)) * refreshInterval;
 
     if (nearestMultiple == 60) {
       nearestMultiple = 0;
@@ -44,7 +41,7 @@ class Graph {
     LocalDateTime now = LocalDateTime.now();
     Double div = Double.valueOf(now.getMinute()) / Double.valueOf(refreshInterval);
 
-    int nearestMultiple = div.intValue() * refreshInterval;
+    int nearestMultiple = ((int)Math.round(div)) * refreshInterval;
 
     if (nearestMultiple == 60) {
       nearestMultiple = 0;
@@ -65,7 +62,7 @@ class Graph {
     startDate = getStartDate();
     endDate = getEndDate();
 
-    GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/stats?interval=5");
+    GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/stats?interval=5&start=" + startDate + "&end=" + endDate);
     request.addHeader("Authorization", apiKey);
     request.send();
 
@@ -76,19 +73,14 @@ class Graph {
 
     highest = findHighest(data);
     lowest = findLowest(data);
-    middle = (highest + lowest) / 2;
 
-    if (middle == lowest) middle = highest;
-
-    legendOffset = String.valueOf(highest).length() * 20 + 5;
+    legendOffset = String.valueOf(highest).length() * 20;
   }
 
-  void drawGraph(long now) {
+  void drawGraph() {
     // Refresh data after state has cycled through all states, wrapping it back around to day
-    if (lastTimestamp == 0 || (now - lastTimestamp) > refreshInterval * State.values().length) {
+    if (state == State.ALL) {
       getData();
-
-      lastTimestamp = now;
     }
 
     fill(255);
@@ -96,19 +88,19 @@ class Graph {
     int legendY = height - tickerOffsetY;
 
     stroke(115);
-    line(legendOffset, (legendY/3), width - 10, (legendY/3));
-    line(legendOffset, (legendY/3)*2, width - 10, (legendY/3)*2);
+    line(legendOffset + 5, (legendY/3), width - 10, (legendY/3));
+    line(legendOffset + 5, (legendY/3)*2, width - 10, (legendY/3)*2);
 
     textSize(20);
 
     textAlign(RIGHT, CENTER);
 
-    text(highest, String.valueOf(highest).length() * 20, 20);
+    text(highest, legendOffset, 20);
 
     if (lowest < highest) {
-      text((int) map(2, 0, 3, lowest, highest), 35, (legendY/3));
-      text((int) map(1, 0, 3, lowest, highest), 35, (legendY/3)*2);
-      text(lowest, 35, legendY - 10);
+      text((int) map(2, 0, 3, lowest, highest), legendOffset, (legendY/3));
+      text((int) map(1, 0, 3, lowest, highest), legendOffset, (legendY/3)*2);
+      text(lowest, legendOffset, legendY - 10);
     }
 
     if (startDate != null) {
@@ -150,7 +142,7 @@ class Graph {
 
         float graphLowerY = legendY - graphOffset;
 
-        if (highest == middle) {
+        if (highest == lowest) {
           currentLineY = map(current, highest, highest, graphLowerY, 10);
           nextLineY = map(next, highest, highest, graphLowerY, 10);
         } else {
@@ -165,17 +157,17 @@ class Graph {
         if (Float.isNaN(nextLineY)) nextLineY = 10;
 
         line(
-          map(i, 0, data.length - 1, legendOffset, width - 10),
+          map(i, 0, data.length - 1, legendOffset + 5, width - 10),
           currentLineY,
-          map(i + 1, 0, data.length - 1, legendOffset, width - 10),
+          map(i + 1, 0, data.length - 1, legendOffset + 5, width - 10),
           nextLineY
           );
       }
     }
 
     stroke(255);
-    line(legendOffset, 10, legendOffset, legendY);
-    line(legendOffset, legendY, width - 10, legendY);
+    line(legendOffset + 5, 10, legendOffset + 5, legendY);
+    line(legendOffset + 5, legendY, width - 10, legendY);
   }
 
   int findHighest(int[] data) {
