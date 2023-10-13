@@ -74,7 +74,7 @@ class Graph {
     highest = findHighest(data);
     lowest = findLowest(data);
 
-    legendOffset = String.valueOf(highest).length() * 20;
+    legendOffset = String.valueOf(highest).length() * 15;
   }
 
   void drawGraph() {
