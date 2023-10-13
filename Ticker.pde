@@ -41,12 +41,10 @@ class Totals {
   }
 }
 
+private State state = State.ALL;
+
 class Ticker {
   private Gson gson = new Gson();
-
-  private long lastTimestamp = 0;
-
-  private State state = State.ALL;
   private int textOffset = tickerOffsetY - 100;
 
   private int streak = 0;
@@ -135,12 +133,10 @@ class Ticker {
     text(String.format("%,d", totals.all) + "×", x, y);
   }
 
-  void drawTicker(long now) {
+  void drawTicker() {
     // Refresh data after state has cycled through all states, wrapping it back around to day
-    if (lastTimestamp == 0 || (now - lastTimestamp) > refreshInterval * State.values().length) {
+    if (state == State.ALL) {
       getTotal();
-
-      lastTimestamp = now;
     }
 
     if (error != null) {
