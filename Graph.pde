@@ -18,9 +18,9 @@ class Graph {
 
   LocalDateTime getStartDate() {
     LocalDateTime now = LocalDateTime.now();
-    Double div = Double.valueOf(now.getMinute()) / Double.valueOf(refreshInterval);
+    Double div = Double.valueOf(now.getMinute()) / Double.valueOf(5);
 
-    int nearestMultiple = ((int)Math.round(div)) * refreshInterval;
+    int nearestMultiple = ((int)Math.round(div)) * 5;
 
     if (nearestMultiple == 60) {
       nearestMultiple = 0;
@@ -39,9 +39,9 @@ class Graph {
 
   LocalDateTime getEndDate() {
     LocalDateTime now = LocalDateTime.now();
-    Double div = Double.valueOf(now.getMinute()) / Double.valueOf(refreshInterval);
+    Double div = Double.valueOf(now.getMinute()) / Double.valueOf(5);
 
-    int nearestMultiple = ((int)Math.round(div)) * refreshInterval;
+    int nearestMultiple = ((int)Math.round(div)) * 5;
 
     if (nearestMultiple == 60) {
       nearestMultiple = 0;
