@@ -107,9 +107,9 @@ class Graph {
       textAlign(LEFT, BOTTOM);
 
       if (startDate.getDayOfMonth() == endDate.getDayOfMonth()) {
-        text(startDate.format(time), legendOffset, legendY + 30);
+        text(startDate.format(time), legendOffset + 5, legendY + 30);
       } else {
-        text(startDate.format(dateTime), legendOffset, legendY + 30);
+        text(startDate.format(dateTime), legendOffset + 5, legendY + 30);
       }
     }
 
