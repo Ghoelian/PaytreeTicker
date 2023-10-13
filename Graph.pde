@@ -17,8 +17,6 @@ class Graph {
   private int middle;
   private int lowest;
 
-  private int stepSize;
-
   private long lastTimestamp = 0;
 
   LocalDateTime getStartDate() {
@@ -67,7 +65,7 @@ class Graph {
     startDate = getStartDate();
     endDate = getEndDate();
 
-    GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/stats");
+    GetRequest request = new GetRequest("https://api.paytree.nl/v1/status/stats?interval=5");
     request.addHeader("Authorization", apiKey);
     request.send();
 
@@ -82,11 +80,7 @@ class Graph {
 
     if (middle == lowest) middle = highest;
 
-    legendOffset = String.valueOf(highest).length() * 20 + 20;
-
-    if (data != null && data.length > 0) {
-      stepSize = (width - legendOffset) / data.length;
-    }
+    legendOffset = String.valueOf(highest).length() * 20 + 5;
   }
 
   void drawGraph(long now) {
@@ -105,15 +99,11 @@ class Graph {
     line(legendOffset, (legendY/3), width - 10, (legendY/3));
     line(legendOffset, (legendY/3)*2, width - 10, (legendY/3)*2);
 
-    stroke(255);
-    line(legendOffset, 10, legendOffset, legendY);
-    line(legendOffset, legendY, width - 10, legendY);
-
     textSize(20);
 
     textAlign(RIGHT, CENTER);
 
-    text(highest, 35, 20);
+    text(highest, String.valueOf(highest).length() * 20, 20);
 
     if (lowest < highest) {
       text((int) map(2, 0, 3, lowest, highest), 35, (legendY/3));
@@ -175,13 +165,17 @@ class Graph {
         if (Float.isNaN(nextLineY)) nextLineY = 10;
 
         line(
-          (i * stepSize) + legendOffset + graphOffset,
+          map(i, 0, data.length - 1, legendOffset, width - 10),
           currentLineY,
-          ((i + 1) * stepSize) + legendOffset + graphOffset,
+          map(i + 1, 0, data.length - 1, legendOffset, width - 10),
           nextLineY
           );
       }
     }
+
+    stroke(255);
+    line(legendOffset, 10, legendOffset, legendY);
+    line(legendOffset, legendY, width - 10, legendY);
   }
 
   int findHighest(int[] data) {
