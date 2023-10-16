@@ -97,11 +97,9 @@ class Graph {
 
     text(highest, legendOffset, 20);
 
-    if (lowest < highest) {
-      text((int) map(2, 0, 3, lowest, highest), legendOffset, (legendY/3));
-      text((int) map(1, 0, 3, lowest, highest), legendOffset, (legendY/3)*2);
-      text(lowest, legendOffset, legendY - 10);
-    }
+    text((int) map(2, 0, 3, lowest, highest), legendOffset, (legendY/3));
+    text((int) map(1, 0, 3, lowest, highest), legendOffset, (legendY/3)*2);
+    text(lowest, legendOffset, legendY - 10);
 
     if (startDate != null) {
       textAlign(LEFT, BOTTOM);
@@ -132,37 +130,29 @@ class Graph {
       // Draw lines between all data points, connecting first to second etc.
       // which means the second-to-last datapoint will connect to the final datapoint,
       // so we can skip drawing a line from the last datapoint to nothing.
-      for (int i = 0; i < data.length - 1; i++) {
+      noFill();
+      beginShape();
+
+      for (int i = 0; i < data.length; i++) {
         int current = this.data[i];
 
-        int next = data[i + 1];
-
         float currentLineY;
-        float nextLineY;
 
         float graphLowerY = legendY - graphOffset;
 
         if (highest == lowest) {
           currentLineY = map(current, highest, highest, graphLowerY, 10);
-          nextLineY = map(next, highest, highest, graphLowerY, 10);
         } else {
           currentLineY = map(current, lowest, highest, graphLowerY, 10);
-          nextLineY = map(next, lowest, highest, graphLowerY, 10);
         }
 
         if (Float.isInfinite(currentLineY)) currentLineY = graphLowerY;
         if (Float.isNaN(currentLineY)) currentLineY = 10;
 
-        if (Float.isInfinite(nextLineY)) nextLineY = graphLowerY;
-        if (Float.isNaN(nextLineY)) nextLineY = 10;
-
-        line(
-          map(i, 0, data.length - 1, legendOffset + 5, width - 10),
-          currentLineY,
-          map(i + 1, 0, data.length - 1, legendOffset + 5, width - 10),
-          nextLineY
-          );
+        vertex(map(i, 0, data.length - 1, legendOffset + 5, width - 10), currentLineY);
       }
+
+      endShape();
     }
 
     stroke(255);
