@@ -78,10 +78,7 @@ class Graph {
   }
 
   void drawGraph() {
-    // Refresh data after state has cycled through all states, wrapping it back around to day
-    if (state == State.ALL) {
-      getData();
-    }
+    getData();
 
     fill(255);
 
