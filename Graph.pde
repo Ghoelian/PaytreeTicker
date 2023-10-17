@@ -11,10 +11,10 @@ class Graph {
   private LocalDateTime startDate;
   private LocalDateTime endDate;
 
-  private int[] data;
+  private float[] data;
 
-  private int highest;
-  private int lowest;
+  private float highest;
+  private float lowest;
 
   LocalDateTime getStartDate() {
     LocalDateTime now = LocalDateTime.now();
@@ -68,13 +68,13 @@ class Graph {
 
     String result = request.getContent();
 
-    int[] arr = gson.fromJson(result, int[].class);
+    float[] arr = gson.fromJson(result, float[].class);
     data = arr;
 
     highest = findHighest(data);
     lowest = findLowest(data);
 
-    legendOffset = String.valueOf(highest).length() * 15;
+    legendOffset = String.format("%.1f", highest).length() * 15;
   }
 
   void drawGraph() {
@@ -97,9 +97,11 @@ class Graph {
 
     text(highest, legendOffset, 20);
 
-    text((int) map(2, 0, 3, lowest, highest), legendOffset, (legendY/3));
-    text((int) map(1, 0, 3, lowest, highest), legendOffset, (legendY/3)*2);
-    text(lowest, legendOffset, legendY - 10);
+    text(String.format("%.1f", highest), legendOffset, 20);
+    text(String.format("%.1f", topMid), legendOffset, map(1, 0, 4, 10, legendY));
+    text(String.format("%.1f", mid), legendOffset, map(2, 0, 4, 10, legendY));
+    text(String.format("%.1f", bottomMid), legendOffset, map(3, 0, 4, 10, legendY));
+    text(String.format("%.1f", lowest), legendOffset, legendY - 10);
 
     if (startDate != null) {
       textAlign(LEFT, BOTTOM);
@@ -134,7 +136,7 @@ class Graph {
       beginShape();
 
       for (int i = 0; i < data.length; i++) {
-        int current = this.data[i];
+        float current = this.data[i];
 
         float currentLineY;
 
@@ -160,12 +162,12 @@ class Graph {
     line(legendOffset + 5, legendY, width - 10, legendY);
   }
 
-  int findHighest(int[] data) {
+  float findHighest(float[] data) {
     if (data == null) {
       return highest;
     }
 
-    int result = -1;
+    float result = -1;
 
     for (int i = 0; i < data.length; i++) {
       if (data[i] > result) {
@@ -176,12 +178,12 @@ class Graph {
     return result;
   }
 
-  int findLowest(int[] data) {
+  float findLowest(float[] data) {
     if (data == null) {
       return lowest;
     }
 
-    int result = -1;
+    float result = -1;
 
     for (int i = 0; i < data.length; i++) {
       if (result == -1) {
