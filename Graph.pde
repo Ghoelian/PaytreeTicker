@@ -85,14 +85,17 @@ class Graph {
     int legendY = height - tickerOffsetY;
 
     stroke(115);
-    line(legendOffset + 5, (legendY/3), width - 10, (legendY/3));
-    line(legendOffset + 5, (legendY/3)*2, width - 10, (legendY/3)*2);
+    line(legendOffset + 5, map(1, 0, 4, 10, legendY), width - 10, map(1, 0, 4, 10, legendY));
+    line(legendOffset + 5, map(2, 0, 4, 10, legendY), width - 10, map(2, 0, 4, 10, legendY));
+    line(legendOffset + 5, map(3, 0, 4, 10, legendY), width - 10, map(3, 0, 4, 10, legendY));
 
     textSize(20);
 
     textAlign(RIGHT, CENTER);
 
-    text(highest, legendOffset, 20);
+    float topMid = map(3, 0, 4, lowest, highest);
+    float mid = map(2, 0, 4, lowest, highest);
+    float bottomMid = map(1, 0, 4, lowest, highest);
 
     text(String.format("%.1f", highest), legendOffset, 20);
     text(String.format("%.1f", topMid), legendOffset, map(1, 0, 4, 10, legendY));
