@@ -3,7 +3,7 @@ A little Processing program that displays a graph showing the amount of transact
 and the total turnover over the entire history of Paytree.
 
 ### Screenshot
-![Screenshot](https://github.com/Ghoelian/PaytreeTicker/blob/master/data/screenshot.png?raw=true)
+![Screenshot](https://github.com/Ghoelian/PaytreeTicker/blob/master/data/screenshot.png?raw=true&v=2)
 
 The indicator to the right of the total indicates wether the total turnover has increased since the last refresh. If so, it displays a ^ and records a streak. If not, it displays a - and resets the streak back to 0.
 The colour of the indicator is mapped from 0 to the max streak the program has recorded, to hsv(0), hsv(120) for red to yellow to green.
