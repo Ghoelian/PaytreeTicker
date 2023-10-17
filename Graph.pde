@@ -16,6 +16,10 @@ class Graph {
   private float highest;
   private float lowest;
 
+  private int graphOffset = 4;
+  private int legendY = height - tickerOffsetY;
+  private float graphLowerY = legendY - graphOffset;
+
   LocalDateTime getStartDate() {
     LocalDateTime now = LocalDateTime.now();
     Double div = Double.valueOf(now.getMinute()) / Double.valueOf(5);
@@ -82,12 +86,10 @@ class Graph {
 
     fill(255);
 
-    int legendY = height - tickerOffsetY;
-
     stroke(115);
-    line(legendOffset + 5, map(1, 0, 4, 10, legendY), width - 10, map(1, 0, 4, 10, legendY));
-    line(legendOffset + 5, map(2, 0, 4, 10, legendY), width - 10, map(2, 0, 4, 10, legendY));
-    line(legendOffset + 5, map(3, 0, 4, 10, legendY), width - 10, map(3, 0, 4, 10, legendY));
+    line(legendOffset + 5, map(3, 0, 4, graphLowerY, 10), width - 10, map(3, 0, 4, graphLowerY, 10));
+    line(legendOffset + 5, map(2, 0, 4, graphLowerY, 10), width - 10, map(2, 0, 4, graphLowerY, 10));
+    line(legendOffset + 5, map(1, 0, 4, graphLowerY, 10), width - 10, map(1, 0, 4, graphLowerY, 10));
 
     textSize(20);
 
@@ -98,9 +100,9 @@ class Graph {
     float bottomMid = map(1, 0, 4, lowest, highest);
 
     text(String.format("%.1f", highest), legendOffset, 20);
-    text(String.format("%.1f", topMid), legendOffset, map(1, 0, 4, 10, legendY));
-    text(String.format("%.1f", mid), legendOffset, map(2, 0, 4, 10, legendY));
-    text(String.format("%.1f", bottomMid), legendOffset, map(3, 0, 4, 10, legendY));
+    text(String.format("%.1f", topMid), legendOffset, map(3, 0, 4, graphLowerY, 10));
+    text(String.format("%.1f", mid), legendOffset, map(2, 0, 4, graphLowerY, 10));
+    text(String.format("%.1f", bottomMid), legendOffset, map(1, 0, 4, graphLowerY, 10));
     text(String.format("%.1f", lowest), legendOffset, legendY - 10);
 
     if (startDate != null) {
@@ -127,8 +129,6 @@ class Graph {
       stroke(24, 94.6, 94.9);
       strokeWeight(2);
 
-      int graphOffset = 4;
-
       // Draw lines between all data points, connecting first to second etc.
       // which means the second-to-last datapoint will connect to the final datapoint,
       // so we can skip drawing a line from the last datapoint to nothing.
@@ -139,8 +139,6 @@ class Graph {
         float current = this.data[i];
 
         float currentLineY;
-
-        float graphLowerY = legendY - graphOffset;
 
         if (highest == lowest) {
           currentLineY = map(current, highest, highest, graphLowerY, 10);
