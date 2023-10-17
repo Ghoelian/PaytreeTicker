@@ -60,7 +60,7 @@ void drawStuff(boolean skipInterval) {
       text(e.toString(), width/2, height/2);
     }
 
-    lastTotalTimestamp = now;
+    lastTotalTimestamp = Instant.ofEpochSecond(0L).until(Instant.now(), ChronoUnit.SECONDS);
   }
 }
 
